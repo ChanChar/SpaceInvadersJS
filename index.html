@@ -8,16 +8,15 @@
     <link rel="stylesheet" href="index.css">
   </head>
 
-  <body>
-  </body>
+  <body></body>
 
   <script type="text/javascript">
-    var display, input, frames;
+    var display, input, frames, spriteFrame, levelFrame;
     var alienSprite, tankSprite, citySprite;
     var aliens, dir, tank, bullets, cities;
 
     function main() {
-      display = new Display(510, 600);
+      display = new Display(505, 400);
       input = new InputHandler();
 
       var img = new Image();
@@ -38,9 +37,11 @@
 
     function init() {
 
+      spriteFrame = 0;
+      levelFrame = 20;
       frames = 0;
-
       aliens = [];
+      dir = 1;
       var rows = [1, 0, 0, 2, 2];
 
       for (var i = 0, len = rows.length; i < len; i++) {
@@ -68,12 +69,39 @@
       window.requestAnimationFrame(loop, display.canvas);
     };
 
-    function update() {};
+    function update() {
+      frames++;
+
+      if (frames % levelFrame === 0) {
+        spriteFrame = (spriteFrame + 1) % 2;
+
+        var max = 0, min = screen.width;
+
+        for (var i = 0, len = aliens.length; i < len; i++) {
+
+          var currentAlien = aliens[i]
+
+          currentAlien.x += 30 * dir;
+
+          max = Math.max(max, currentAlien.x + currentAlien.w);
+          min = Math.min(min, currentAlien.x);
+        }
+
+        if (max > display.width - 30 || min < 30) {
+          dir *= -1;
+          for (var i = 0, len = aliens.length; i < len; i++) {
+            aliens[i].x += 30 * dir;
+            aliens[i].y += 30;
+          }
+        }
+      }
+    };
 
     function render() {
+      display.clear();
       for (var i = 0, len = aliens.length; i < len; i++) {
         var a = aliens[i];
-        display.drawSprite(a.sprite[0], a.x, a.y);
+        display.drawSprite(a.sprite[spriteFrame], a.x, a.y);
       }
     };
 

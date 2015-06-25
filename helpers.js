@@ -14,6 +14,10 @@ Display.prototype.drawSprite = function (sp, x, y) {
   this.context.drawImage(sp.image, sp.x, sp.y, sp.w, sp.h, x, y, sp.w, sp.h);
 };
 
+Display.prototype.clear = function () {
+  this.context.clearRect(0, 0, this.width, this.height);
+};
+
 // Sprites
 
 function Sprite(image, x, y, w, h) {
