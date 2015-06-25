@@ -16,7 +16,7 @@
     var aliens, dir, tank, bullets, cities;
 
     function main() {
-      display = new Display(505, 400);
+      display = new Display(505, 500);
       input = new InputHandler();
 
       var img = new Image();
@@ -40,6 +40,13 @@
       spriteFrame = 0;
       levelFrame = 20;
       frames = 0;
+
+      tank = {
+        sprite: tankSprite,
+        x: (display.width - tankSprite.w) / 2,
+        y: display.height - (30 + tankSprite.h)
+      };
+
       aliens = [];
       dir = 1;
       var rows = [1, 0, 0, 2, 2];
@@ -70,12 +77,25 @@
     };
 
     function update() {
+
+      if (input.isDown(37)) {
+          tank.x -= 4;
+      } else if (input.isDown(39)) {
+        tank.x += 4;
+      }
+
+      if (tank.x > display.width) {
+        tank.x -= display.width;
+      } else if (tank.x < 0) {
+        tank.x += display.width
+      }
+
       frames++;
 
       if (frames % levelFrame === 0) {
         spriteFrame = (spriteFrame + 1) % 2;
 
-        var max = 0, min = screen.width;
+        var max = 0, min = display.width;
 
         for (var i = 0, len = aliens.length; i < len; i++) {
 
@@ -100,9 +120,11 @@
     function render() {
       display.clear();
       for (var i = 0, len = aliens.length; i < len; i++) {
-        var a = aliens[i];
-        display.drawSprite(a.sprite[spriteFrame], a.x, a.y);
+        var currentAlien = aliens[i];
+        display.drawSprite(currentAlien.sprite[spriteFrame], currentAlien.x, currentAlien.y);
       }
+
+      display.drawSprite(tank.sprite, tank.x, tank.y);
     };
 
     main();
