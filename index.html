@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Defend the Planet!</title>
+    <script type="text/javascript" src="helpers.js"></script>
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
+
+  </body>
+
+  <script type="text/javascript">
+    var display, input, frames;
+    var alienSprite, tankSprite, citySprite;
+    var aliens, dir, tank, bullets, cities;
+
+    function main() {
+      display = new Display(510, 600);
+      input = new InputHandler();
+
+      var img = new Image();
+      img.addEventListener('load', function() {
+        alienSprite = [
+          [new Sprite(this, 0, 0, 22, 16), new Sprite(this, 0, 16, 22, 16)],
+          [new Sprite(this, 22, 0, 16, 16), new Sprite(this, 22, 16, 16, 16)],
+          [new Sprite(this, 38, 0, 24, 16), new Sprite(this, 38, 16, 24, 16)]
+        ];
+        tankSprite = new Sprite(this, 62, 0, 22, 16);
+        citySprite = new Sprite(this, 84, 8, 36, 24);
+
+        init();
+        run();
+      });
+      img.src = "all_sprites.png";
+    };
+
+    function init() {};
+
+    function run() {
+
+      var loop = function () {
+        update();
+        render();
+
+        window.requestAnimationFrame(loop, display.canvas);
+      };
+      window.requestAnimationFrame(loop, display.canvas);
+    };
+
+    function update() {};
+
+    function render() {
+      // display.drawSprite(citySprite, 10, 10);
+    };
+
+    main();
+  </script>
+</html>
