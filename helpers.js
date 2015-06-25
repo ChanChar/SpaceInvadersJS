@@ -8,7 +8,6 @@ function Display(width, height) {
   this.context = this.canvas.getContext("2d");
 
   document.body.appendChild(this.canvas);
-
 }
 
 Display.prototype.drawSprite = function (sp, x, y) {
