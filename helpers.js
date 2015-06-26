@@ -1,5 +1,8 @@
 // Helper functions
 
+function collision(ax, ay, aw, ah, bx, by, bw, bh) {
+  return ax < bx + bw && bx < ax + aw && ay < by + bh && by < ay + ah;
+}
 
 // Bullet
 function Bullet(x, y, vely, w, h, color) {
@@ -35,20 +38,13 @@ Display.prototype.drawBullet = function (bullet) {
 };
 
 Display.prototype.endGame = function () {
-
   var canvas = document.getElementsByTagName("canvas")[0];
   canvas.style.backgroundColor = '#C0392B';
+};
 
-  // var context = canvas.getContext('2d');
-  // var x = canvas.width / 2;
-  // var y = canvas.height / 2;
-  //
-  // context.font="12px Arial";
-  // context.fillStyle='white';
-  // context.textAlign = 'center';
-  // context.fillText("Hello World!", x, y);
-
-  // context.fillText('Hello World!', x, y);
+Display.prototype.winGame = function () {
+  var canvas = document.getElementsByTagName("canvas")[0];
+  canvas.style.backgroundColor = 'green';
 };
 
 Display.prototype.clear = function () {
@@ -88,7 +84,8 @@ InputHandler.prototype.isPressed = function(code) {
   if (this.pressed[code]) {
     return false;
   } else if (this.down[code]) {
-    return this.pressed[code] = true;
+    this.pressed[code] = true;
+    return true;
   }
 
   return false;
