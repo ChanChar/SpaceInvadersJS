@@ -13,10 +13,10 @@
   <script type="text/javascript">
     var display, input, frames, spriteFrame, levelFrame;
     var alienSprite, tankSprite, citySprite;
-    var aliens, dir, tank, bullets, cities;
+    var aliens, dir, tank, missles, cities;
 
     function main() {
-      display = new Display(505, 500);
+      display = new Display(502, 500);
       input = new InputHandler();
 
       var img = new Image();
@@ -26,7 +26,7 @@
           [new Sprite(this, 22, 0, 16, 16), new Sprite(this, 22, 16, 16, 16)],
           [new Sprite(this, 38, 0, 24, 16), new Sprite(this, 38, 16, 24, 16)]
         ];
-        tankSprite = new Sprite(this, 62, 0, 22, 16);
+        tankSprite = new Sprite(this, 63, 0, 22, 16);
         citySprite = new Sprite(this, 84, 8, 36, 24);
 
         init();
@@ -38,16 +38,18 @@
     function init() {
 
       spriteFrame = 0;
-      levelFrame = 20;
+      levelFrame = 5;
       frames = 0;
 
       tank = {
         sprite: tankSprite,
         x: (display.width - tankSprite.w) / 2,
-        y: display.height - (30 + tankSprite.h)
+        y: display.height - (15 + tankSprite.h)
       };
 
       aliens = [];
+      bullets = [];
+
       dir = 1;
       var rows = [1, 0, 0, 2, 2];
 
@@ -70,7 +72,6 @@
       var loop = function () {
         update();
         render();
-
         window.requestAnimationFrame(loop, display.canvas);
       };
       window.requestAnimationFrame(loop, display.canvas);
@@ -79,9 +80,9 @@
     function update() {
 
       if (input.isDown(37)) {
-          tank.x -= 4;
+          tank.x -= 5;
       } else if (input.isDown(39)) {
-        tank.x += 4;
+        tank.x += 5;
       }
 
       if (tank.x > display.width) {
@@ -90,6 +91,16 @@
         tank.x += display.width
       }
 
+      if (input.isPressed(32)) {
+        bullets.push(new Bullet(tank.x + 10, tank.y, -8, 2, 6, '#fff'));
+      }
+
+      for (var i = 0, len = bullets.length; i < len; i++) {
+        var bullet = bullets[i];
+        bullet.update();
+
+        if (bullet.y + b.height < 0 || bullet)
+      }
       frames++;
 
       if (frames % levelFrame === 0) {
@@ -107,11 +118,16 @@
           min = Math.min(min, currentAlien.x);
         }
 
-        if (max > display.width - 30 || min < 30) {
+        if (max > display.width || min < 30) {
           dir *= -1;
           for (var i = 0, len = aliens.length; i < len; i++) {
             aliens[i].x += 30 * dir;
-            aliens[i].y += 30;
+            aliens[i].y += 20;
+
+            if (aliens[i].y > display.height - 45) {
+              display.endGame();
+              // handle restart and reset game.
+            }
           }
         }
       }
@@ -123,6 +139,12 @@
         var currentAlien = aliens[i];
         display.drawSprite(currentAlien.sprite[spriteFrame], currentAlien.x, currentAlien.y);
       }
+
+      display.context.save();
+      for (var i = 0, len = bullets.length; i < len; i++) {
+        display.drawBullet(bullets[i]);
+      }
+      display.context.restore();
 
       display.drawSprite(tank.sprite, tank.x, tank.y);
     };
