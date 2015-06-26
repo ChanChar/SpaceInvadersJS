@@ -23,9 +23,11 @@ function Display(width, height) {
   this.canvas = document.createElement('canvas');
   this.canvas.width = this.width = width;
   this.canvas.height = this.height = height;
+  this.canvas.setAttribute("class", "small-10 small-offset-1 columns large-6 large-offset-3");
   this.context = this.canvas.getContext("2d");
 
-  document.body.appendChild(this.canvas);
+  var gameContainer = document.getElementById('game-container').appendChild(this.canvas);
+  // document.body.appendChild(this.canvas);
 }
 
 Display.prototype.drawSprite = function (sp, x, y) {

@@ -6,11 +6,27 @@
     <title>Defend the Planet!</title>
     <script type="text/javascript" src="helpers.js"></script>
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="http://cdn.foundation5.zurb.com/foundation.css">
+    <link rel="stylesheet" href="http://cdn.foundation5.zurb.com/foundation.js">
   </head>
 
   <body>
-    <div class="lose-screen">You saved the planet!</div>
-    <div class="win-screen">Aliens took over the world!</div>
+    <!-- <div class="row"> -->
+      <!-- <div class="small-10 small-offset-1 large-10 large-offset-1 columns machine-top"></div> -->
+    <!-- </div> -->
+    <div class="row endgame-screen">
+      <div class="small-8 small-offset-2 large-6 large-offset-3 columns win-screen">You saved the planet!</div>
+    </div>
+    <div class="row endgame-screen">
+      <div class="small-8 small-offset-2 columns large-6 large-offset-3 lose-screen">Aliens took over the world!</div>
+    </div>
+    <div id='game-container' class="row"></div>
+    <div class="row">
+      <div class="small-8 small-offset-2 columns large-8 large-offset-2 game-controls">
+        <!-- left and right buttons -->
+        <!-- shoot button pew pew -->
+      </div>
+    </div>
   </body>
 
   <script type="text/javascript">
@@ -54,7 +70,7 @@
         alive: true,
 
         destroy: function () {
-          this.y += 25;
+          this.y += 100;
           this.alive = false;
         }
       };
@@ -117,7 +133,7 @@
         }
       }
     };
-    
+
     function pause() {
       if (input.isDown(80)) {
         // stop the loop from running.
