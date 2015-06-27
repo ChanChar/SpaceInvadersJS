@@ -7,18 +7,36 @@
     <script type="text/javascript" src="helpers.js"></script>
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="http://cdn.foundation5.zurb.com/foundation.css">
-    <link rel="stylesheet" href="http://cdn.foundation5.zurb.com/foundation.js">
+    <script href="http://cdn.foundation5.zurb.com/foundation.js"></script>
   </head>
 
   <body>
-    <!-- <div class="row"> -->
-      <!-- <div class="small-10 small-offset-1 large-10 large-offset-1 columns machine-top"></div> -->
-    <!-- </div> -->
-    <div class="row endgame-screen">
-      <div class="small-8 small-offset-2 large-6 large-offset-3 columns win-screen">You saved the planet!</div>
+
+    <div class="row start-screen">
+      <div class="small-8 small-offset-2 large-6 large-offset-3 columns menu-screen">
+        <!-- <div class="row" id='start-button'> -->
+          <p id='start-button'>
+            Blast Aliens!
+          </p>
+        <!-- </div> -->
+      </div>
     </div>
-    <div class="row endgame-screen">
-      <div class="small-8 small-offset-2 columns large-6 large-offset-3 lose-screen">Aliens took over the world!</div>
+
+    <div class="row endgame-screen hide">
+      <div class="small-8 small-offset-2 large-6 large-offset-3 columns win-screen">
+        You saved the planet!
+        <div class="row menu-button">
+          Back to Menu
+        </div>
+      </div>
+    </div>
+    <div class="row endgame-screen hide">
+      <div class="small-8 small-offset-2 columns large-6 large-offset-3 lose-screen">
+        Aliens took over the world!
+        <div class="row menu-button">
+          Back to Menu
+        </div>
+      </div>
     </div>
     <div id='game-container' class="row"></div>
     <div class="row">
@@ -33,6 +51,14 @@
     var display, input, frames, spriteFrame, levelFrame;
     var alienSprite, tankSprite, citySprite;
     var aliens, dir, tank, bullets, cities;
+
+    var menuButtons = document.getElementsByClassName("menu-button");
+    menuButtons[0].addEventListener("click", reloadGame, false);
+    menuButtons[1].addEventListener("click", reloadGame, false);
+
+    function hideMenu() {
+      document.getElementsByClassName('start-screen')[0].className = 'hide'
+    }
 
     function main() {
       display = new Display(502, 500);
@@ -140,6 +166,10 @@
       }
     }
 
+    function reloadGame () {
+      location.reload();
+    }
+
     function run() {
       var loop = function () {
         update();
@@ -233,7 +263,7 @@
         if (collision(bullet.x, bullet.y, bullet.width, bullet.height, tank.x, tank.y, 22, 16)) {
           tank.destroy();
           this.levelFrame = 8;
-          display.endGame();
+          display.loseGame();
         }
       }
 
@@ -273,7 +303,7 @@
             aliens[i].y += 20;
 
             if (aliens[i].y > display.height - 45) {
-              display.endGame();
+              display.loseGame();
               // handle restart and reset game.
             }
           }
@@ -297,6 +327,10 @@
       display.drawSprite(tank.sprite, tank.x, tank.y);
     };
 
-    main();
+    var startButton = document.getElementById("start-button");
+    startButton.addEventListener("click", hideMenu, false);
+    startButton.addEventListener("click", main, false);
+
+    // main();
   </script>
 </html>

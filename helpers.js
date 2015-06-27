@@ -39,14 +39,16 @@ Display.prototype.drawBullet = function (bullet) {
   this.context.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
 };
 
-Display.prototype.endGame = function () {
+Display.prototype.loseGame = function () {
   var canvas = document.getElementsByTagName("canvas")[0];
   canvas.style.backgroundColor = '#C0392B';
+  document.getElementsByClassName('lose-screen')[0].parentNode.className = "row endgame-screen";
 };
 
 Display.prototype.winGame = function () {
   var canvas = document.getElementsByTagName("canvas")[0];
   canvas.style.backgroundColor = 'green';
+  document.getElementsByClassName('win-screen')[0].parentNode.className = "row endgame-screen";
 };
 
 Display.prototype.clear = function () {
