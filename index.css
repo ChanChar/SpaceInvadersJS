@@ -1,0 +1,87 @@
+canvas {
+  background-color: #000;
+}
+
+@font-face {
+  font-family: ArcadeClassic;
+  src: url(arcade_classic.ttf);
+ }
+
+.win-screen, .lose-screen, .menu-screen {
+  height: 468px;
+  position: absolute;
+  font-family: 'ArcadeClassic';
+  font-size: 2em;
+  color: white;
+  border: 2px solid black;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 300px;
+  z-index: 1000;
+}
+
+.menu-screen {
+  background-image: url(http://res.cloudinary.com/charliecloud/image/upload/v1435366923/user-profile-images/space-invaders-minimal-cabinet_moagrp.jpg);
+  background-size: cover;
+  border: 2px solid black;
+}
+
+.menu-button {
+  line-height: 0px;
+}
+
+.menu-button:hover, #start-button:hover {
+  color: white;
+  cursor: pointer;
+}
+
+#start-button:hover {
+  color: red;
+}
+
+#start-button {
+  margin-top: 25%;
+  color: white;
+  font-size: 1.5em;
+}
+
+.win-screen {
+ /*visibility: hidden;*/
+}
+
+.lose-screen {
+}
+
+.endgame-screen, .menu-screen {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+
+/* machine */
+
+/*.machine-top {
+  background-color: blue;
+  height: 25px;
+}
+
+.machine-side {
+  background-color: blue;
+  height: 25px;
+}*/
+
+/*game controls*/
+
+.game-controls {
+  height: 100px;
+  background-color: black;
+  border-top: 2px solid #87D37C;
+}
+
+#shoot-button {
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+  border: 2px solid black;
+}

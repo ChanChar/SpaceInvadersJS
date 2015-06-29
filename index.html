@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Defend the Planet!</title>
+    <script type="text/javascript" src="helpers.js"></script>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="http://cdn.foundation5.zurb.com/foundation.css">
+    <script href="http://cdn.foundation5.zurb.com/foundation.js"></script>
+    <link rel="stylesheet" href="/css/extra.css">
+  </head>
+
+  <body>
+    <div id="game">
+      <div class="row start-screen">
+        <div class="small-8 small-offset-2 large-6 large-offset-3 columns menu-screen">
+          <!-- <div class="row" id='start-button'> -->
+            <p id='start-button'>
+              Blast Aliens!
+            </p>
+          <!-- </div> -->
+        </div>
+      </div>
+
+      <div class="row endgame-screen hide">
+        <div class="small-8 small-offset-2 large-6 large-offset-3 columns win-screen">
+          You saved the planet!
+          <div class="row menu-button">
+            Back to Menu
+          </div>
+        </div>
+      </div>
+      <div class="row endgame-screen hide">
+        <div class="small-8 small-offset-2 columns large-6 large-offset-3 lose-screen">
+          Aliens took over the world!
+          <div class="row menu-button">
+            Back to Menu
+          </div>
+        </div>
+      </div>
+      <div id='game-container' class="row"></div>
+      <div class="row">
+        <div class="small-6 small-offset-3 columns large-6 large-offset-3 game-controls">
+          <!-- left and right buttons -->
+          <!-- shoot button pew pew -->
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    var display, input, frames, spriteFrame, levelFrame;
+    var alienSprite, tankSprite, citySprite;
+    var aliens, dir, tank, bullets, cities;
+
+    var menuButtons = document.getElementsByClassName("menu-button");
+    menuButtons[0].addEventListener("click", reloadGame, false);
+    menuButtons[1].addEventListener("click", reloadGame, false);
+
+    function hideMenu() {
+      document.getElementsByClassName('start-screen')[0].className = 'hide'
+    }
+
+    function main() {
+      display = new Display(502, 500);
+      input = new InputHandler();
+
+      var img = new Image();
+      img.addEventListener('load', function() {
+        alienSprite = [
+          [new Sprite(this, 0, 0, 22, 16), new Sprite(this, 0, 16, 22, 16)],
+          [new Sprite(this, 22, 0, 16, 16), new Sprite(this, 22, 16, 16, 16)],
+          [new Sprite(this, 38, 0, 24, 16), new Sprite(this, 38, 16, 24, 16)]
+        ];
+
+        tankSprite = new Sprite(this, 63, 0, 22, 16);
+        citySprite = new Sprite(this, 84, 8, 36, 24);
+
+        init();
+        run();
+      });
+      img.src = "all_sprites.png";
+    };
+
+    function init() {
+
+      spriteFrame = 0;
+      levelFrame = 60;
+      frames = 0;
+      aliens = [];
+      bullets = [];
+
+      tank = {
+        sprite: tankSprite,
+        x: (display.width - tankSprite.w) / 2,
+        y: display.height - (15 + tankSprite.h),
+        alive: true,
+
+        destroy: function () {
+          this.y += 100;
+          this.alive = false;
+        }
+      };
+
+      cities = {
+        canvas: null,
+        context: null,
+        y: tank.y - (30 + citySprite.h),
+        h: citySprite.h,
+
+        init: function () {
+          this.canvas = document.createElement("canvas");
+          this.canvas.width = screen.width;
+          this.canvas.height = this.h;
+          this.context = this.canvas.getContext("2d");
+
+          for (var i = 0; i < 4; i++) {
+    				this.context.drawImage(citySprite.image, citySprite.x, citySprite.y,
+    					citySprite.w, citySprite.h,
+    					68 + 111*i, 0, citySprite.w, citySprite.h);
+    			}
+         },
+
+        degradeBuilding: function (x, y) {
+          x = Math.floor(x);
+          y = Math.floor(y);
+
+          // TODO: Improve building deterioration animation.
+          this.context.clearRect(x, y, 5, 5);
+          this.context.clearRect(x+1, y, 5, 5);
+          this.context.clearRect(x, y+1, 5, 5);
+        },
+
+        hits: function (x, y) {
+          y -= this.y;
+          var data = this.context.getImageData(x, y, 1, 1);
+          if (data.data[3] !== 0) {
+            this.degradeBuilding(x, y);
+            return true;
+          }
+          return false;
+        }
+      };
+
+    	cities.init();
+
+      dir = 1;
+      var rows = [1, 0, 0, 2, 2];
+
+      for (var i = 0, len = rows.length; i < len; i++) {
+        for (var j = 0; j < 10; j++) {
+          var a = rows[i];
+          aliens.push({
+            sprite: alienSprite[a],
+            x: 30 + j * 30 + [0, 4, 0][a],
+            y: 30 + i * 30,
+            w: alienSprite[a][0].w,
+            h: alienSprite[a][0].h
+          });
+        }
+      }
+    };
+
+    function pause() {
+      if (input.isDown(80)) {
+        // stop the loop from running.
+      }
+    }
+
+    function reloadGame () {
+      location.reload();
+    }
+
+    function run() {
+      var loop = function () {
+        update();
+        render();
+        window.requestAnimationFrame(loop, display.canvas);
+      };
+
+      window.requestAnimationFrame(loop, display.canvas);
+    };
+
+    function update() {
+
+      if (input.isDown(37)) {
+          tank.x -= 5;
+      } else if (input.isDown(39)) {
+        tank.x += 5;
+      }
+
+      if (tank.x > display.width) {
+        tank.x -= display.width;
+      } else if (tank.x < 0) {
+        tank.x += display.width
+      }
+
+      if (input.isPressed(32) && tank.alive) {
+      // if (input.isDown(32)) { // FEEL MAH LAZERS
+        bullets.push(new Bullet(tank.x + 8, tank.y, -10, 4, 8, 'red'));
+      }
+
+      for (var i = 0, len = bullets.length; i < len; i++) {
+        var bullet = bullets[i];
+        bullet.update();
+
+
+        if (bullet.y + bullet.height < 0 || bullet.y > display.height) {
+          bullets.splice(i, 1);
+          i--;
+          len--;
+          continue; // needed?
+        }
+
+        var h2 = bullet.height/2;
+
+        if (cities.y < bullet.y+h2 && bullet.y+h2 < cities.y + cities.h) {
+          if (cities.hits(bullet.x, bullet.y+h2)) {
+            bullets.splice(i, 1);
+            i--;
+            len--;
+            continue;
+          }
+        }
+
+        for (var j = 0, aliensLeft = aliens.length; j < aliensLeft; j++) {
+          var a = aliens[j];
+          if (collision(bullet.x, bullet.y, bullet.width, bullet.height, a.x, a.y, a.w, a.h)) {
+            aliens.splice(j, 1);
+            bullets.splice(i, 1);
+            i--;
+            j--;
+            len--;
+            aliensLeft--;
+
+            switch (aliensLeft) {
+              case 30: {
+                this.levelFrame = 40;
+                break;
+              }
+              case 20: {
+                this.levelFrame = 30;
+                break;
+              }
+              case 10: {
+                this.levelFrame = 20;
+                break;
+              }
+              case 5: {
+                this.levelFrame = 15;
+                break;
+              }
+              case 1: {
+                this.levelFrame = 10;
+                break;
+              }
+              case 0: {
+                display.winGame();
+              }
+            }
+          }
+        }
+
+        if (collision(bullet.x, bullet.y, bullet.width, bullet.height, tank.x, tank.y, 22, 16)) {
+          tank.destroy();
+          this.levelFrame = 8;
+          display.loseGame();
+        }
+      }
+
+      if (Math.random() < 0.05 && aliens.length > 0) {
+        var alien = aliens[Math.round(Math.random() * (aliens.length - 1))];
+
+        for (var i = 0, len = aliens.length; i < len; i++) {
+          var b = aliens[i];
+
+          if (collision(alien.x, alien.y, alien.w, 100, b.x, b.y, b.w, b.h)) {
+            alien = b;
+          }
+        }
+        bullets.push(new Bullet(alien.x + alien.w * 0.5, alien.y + alien.h, 7, 5, 5, 'yellow'))
+      }
+      frames++;
+
+      if (frames % levelFrame === 0) {
+        spriteFrame = (spriteFrame + 1) % 2;
+
+        var max = 0, min = display.width;
+
+        for (var i = 0, len = aliens.length; i < len; i++) {
+
+          var currentAlien = aliens[i]
+
+          currentAlien.x += 30 * dir;
+
+          max = Math.max(max, currentAlien.x + currentAlien.w);
+          min = Math.min(min, currentAlien.x);
+        }
+
+        if (max > display.width || min < 30) {
+          dir *= -1;
+          for (var i = 0, len = aliens.length; i < len; i++) {
+            aliens[i].x += 30 * dir;
+            aliens[i].y += 20;
+
+            if (aliens[i].y > display.height - 45) {
+              display.loseGame();
+              // handle restart and reset game.
+            }
+          }
+        }
+      }
+    };
+
+    function render() {
+      display.clear();
+      for (var i = 0, len = aliens.length; i < len; i++) {
+        var currentAlien = aliens[i];
+        display.drawSprite(currentAlien.sprite[spriteFrame], currentAlien.x, currentAlien.y);
+      }
+
+      display.context.save();
+      for (var i = 0, len = bullets.length; i < len; i++) {
+        display.drawBullet(bullets[i]);
+      }
+      display.context.restore();
+      display.context.drawImage(cities.canvas, 0, cities.y);
+      display.drawSprite(tank.sprite, tank.x, tank.y);
+    };
+
+    var startButton = document.getElementById("start-button");
+    startButton.addEventListener("click", hideMenu, false);
+    startButton.addEventListener("click", main, false);
+
+    // main();
+  </script>
+</html>
