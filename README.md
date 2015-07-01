@@ -1,1 +1,1 @@
-The 1980s classic game of defending a base from waves of alien scum. Created using Javascript, HTML and CSS.
+The 1980s classic game of defending a base from waves of alien scum. Created using Javascript, HTML and CSS. Features the original Space Invaders theme song and game sounds. Sprites and sounds credited to the "greatest Space Invaders tribute in the world" at [ClassicGaming](http://www.classicgaming.cc/classics/spaceinvaders/).

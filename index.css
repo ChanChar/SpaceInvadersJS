@@ -1,5 +1,7 @@
 canvas {
   background-color: #000;
+  background-image: url(images/invaders.png);
+  background-size: cover;
 }
 
 @font-face {
@@ -45,13 +47,6 @@ canvas {
   font-size: 1.5em;
 }
 
-.win-screen {
- /*visibility: hidden;*/
-}
-
-.lose-screen {
-}
-
 .endgame-screen, .menu-screen {
   position: absolute;
   left: 0;
@@ -59,21 +54,7 @@ canvas {
   margin: 0 auto;
 }
 
-/* machine */
-
-/*.machine-top {
-  background-color: blue;
-  height: 25px;
-}
-
-.machine-side {
-  background-color: blue;
-  height: 25px;
-}*/
-
-/*game controls*/
-
-.game-controls {
+.menu {
   height: 100px;
   background-color: black;
   border-top: 2px solid #87D37C;
@@ -84,4 +65,27 @@ canvas {
   width: 90px;
   height: 90px;
   border: 2px solid black;
+}
+
+.credits {
+  color: white;
+  font-size: 1.2em;
+  font-family: 'ArcadeClassic'
+}
+
+.name h5 {
+  transition: color .5s;
+  color: #87D37C;
+}
+
+.name:hover h5 {
+  color: white;
+}
+
+#github-icon:hover {
+  cursor: pointer;
+}
+
+.back-to-charlie {
+  padding-top: 2%;
 }

@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="http://cdn.foundation5.zurb.com/foundation.css">
     <script href="http://cdn.foundation5.zurb.com/foundation.js"></script>
     <link rel="stylesheet" href="/css/extra.css">
+
+    <audio autoplay loop id='background-song'>
+      <source src="sounds/background.mpeg">
+    </audio>
   </head>
 
   <body>
@@ -41,9 +45,23 @@
       </div>
       <div id='game-container' class="row"></div>
       <div class="row">
-        <div class="small-6 small-offset-3 columns large-6 large-offset-3 game-controls">
-          <!-- left and right buttons -->
-          <!-- shoot button pew pew -->
+        <div class="small-6 small-offset-3 columns large-6 large-offset-3 menu text-center">
+          <div class="back-to-charlie">
+            <div class="row">
+              <div class="small-4 small-offset-1 columns">
+                <a href="https://github.com/ChanChar/SpaceInvadersJS" target='_blank'>
+                <img src="images/github-icon.png" alt="github-icon" class='right'
+                  id='github-icon' /></a>
+              </div>
+              <div class="small-4 columns left name">
+                <a href="http://charleschanlee.me/about/">
+                  <h5 class='credits'>Created by</h5>
+                  <h5 class='credits'>Charles C. Lee</h5>
+                </a>
+              </div>
+
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -53,6 +71,14 @@
     var display, input, frames, spriteFrame, levelFrame;
     var alienSprite, tankSprite, citySprite;
     var aliens, dir, tank, bullets, cities;
+    var backgroundMusic = document.getElementById('background-song');
+    var alienDeath = new Audio("sounds/invaderkilled.wav");
+    var tankDeath = new Audio("sounds/explosion.wav");
+    var tankBlast = new Audio("sounds/tankblast.wav");
+    backgroundMusic.volume = .45;
+    tankBlast.volume = .25;
+    alienDeath.volume = .25;
+    tankDeath.volume = .25;
 
     var menuButtons = document.getElementsByClassName("menu-button");
     menuButtons[0].addEventListener("click", reloadGame, false);
@@ -198,7 +224,9 @@
 
       if (input.isPressed(32) && tank.alive) {
       // if (input.isDown(32)) { // FEEL MAH LAZERS
-        bullets.push(new Bullet(tank.x + 8, tank.y, -10, 4, 8, 'red'));
+        bullets.push(new Bullet(tank.x + 8, tank.y, -10, 4, 8, '#2ecc71'));
+          tankBlast.play();
+          tankBlast.currentTime = 0;
       }
 
       for (var i = 0, len = bullets.length; i < len; i++) {
@@ -229,6 +257,8 @@
           if (collision(bullet.x, bullet.y, bullet.width, bullet.height, a.x, a.y, a.w, a.h)) {
             aliens.splice(j, 1);
             bullets.splice(i, 1);
+            alienDeath.play();
+            alienDeath.currentTime = 0;
             i--;
             j--;
             len--;
@@ -264,6 +294,8 @@
 
         if (collision(bullet.x, bullet.y, bullet.width, bullet.height, tank.x, tank.y, 22, 16)) {
           tank.destroy();
+          tankDeath.play();
+          tankDeath.currentTime = 0;
           this.levelFrame = 8;
           display.loseGame();
         }
@@ -279,7 +311,7 @@
             alien = b;
           }
         }
-        bullets.push(new Bullet(alien.x + alien.w * 0.5, alien.y + alien.h, 7, 5, 5, 'yellow'))
+        bullets.push(new Bullet(alien.x + alien.w * 0.5, alien.y + alien.h, 7, 5, 5, 'white'))
       }
       frames++;
 
