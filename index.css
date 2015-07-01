@@ -32,6 +32,10 @@ canvas {
   line-height: 0px;
 }
 
+#start-button {
+  transition: color .5s ease-in-out;
+}
+
 .menu-button:hover, #start-button:hover {
   color: white;
   cursor: pointer;
@@ -39,12 +43,35 @@ canvas {
 
 #start-button:hover {
   color: red;
+  animation: 0;
+  -webkit-animation: 0;
 }
 
-#start-button {
+#start-button, .header {
   margin-top: 25%;
   color: white;
   font-size: 1.5em;
+  margin-bottom: 0;
+}
+
+@keyframes blink {
+   0% { opacity: 1.0; }
+   50% { opacity: 0.0; }
+   100% { opacity: 1.0; }
+ }
+ @-webkit-keyframes blink {
+   0% { opacity: 1.0; }
+   50% { opacity: 0.0; }
+   100% { opacity: 1.0; }
+ }
+ 
+ .blink {
+   animation: blink 1.5s step-start 0s infinite;
+   -webkit-animation: blink 1.5s step-start 0s infinite;
+ }
+
+#start-button {
+  margin-top: 0px;
 }
 
 .endgame-screen, .menu-screen {
