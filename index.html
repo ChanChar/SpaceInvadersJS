@@ -110,6 +110,7 @@
 
       spriteFrame = 0;
       levelFrame = 60;
+      bulletVel = 7;
       frames = 0;
       aliens = [];
       bullets = [];
@@ -213,7 +214,7 @@
         tank.x += 5;
       }
 
-      if (tank.x > display.width) {
+      if (tank.x >= display.width) {
         tank.x -= display.width;
       } else if (tank.x < 0) {
         tank.x += display.width
