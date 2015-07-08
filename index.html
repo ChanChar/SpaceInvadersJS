@@ -65,7 +65,7 @@
   </body>
 
   <script type="text/javascript">
-    var display, input, frames, spriteFrame, levelFrame;
+    var display, input, frames, spriteFrame, levelFrame, gameState, bulletVel;
     var alienSprite, tankSprite, citySprite;
     var aliens, dir, tank, bullets, cities;
     var backgroundMusic = document.getElementById('background-song');
@@ -219,8 +219,8 @@
         tank.x += display.width
       }
 
-      if (input.isPressed(32) && tank.alive) {
-      // if (input.isDown(32)) { // FEEL MAH LAZERS
+      // if (input.isPressed(32) && tank.alive) {
+      if (input.isDown(32)) { // FEEL MAH LAZERS
         bullets.push(new Bullet(tank.x + 8, tank.y, -10, 4, 8, '#2ecc71'));
           tankBlast.play();
           tankBlast.currentTime = 0;
@@ -264,26 +264,34 @@
             switch (aliensLeft) {
               case 30: {
                 this.levelFrame = 40;
+                this.bulletVel = 7;
                 break;
               }
               case 20: {
                 this.levelFrame = 30;
+                this.bulletVel = 7;
                 break;
               }
               case 10: {
                 this.levelFrame = 20;
+                this.bulletVel = 8;
                 break;
               }
               case 5: {
                 this.levelFrame = 15;
+                this.bulletVel = 8;
                 break;
               }
               case 1: {
                 this.levelFrame = 10;
+                this.bulletVel = 10;
                 break;
               }
               case 0: {
-                display.winGame();
+                if (this.gameState !== 'finished') {
+                  display.winGame();
+                  this.gameState = 'finished'
+                }
               }
             }
           }
@@ -294,7 +302,10 @@
           tankDeath.play();
           tankDeath.currentTime = 0;
           this.levelFrame = 8;
-          display.loseGame();
+          if (this.gameState !== 'finished') {
+            display.loseGame();
+            this.gameState = 'finished'
+          }
         }
       }
 
@@ -308,7 +319,7 @@
             alien = b;
           }
         }
-        bullets.push(new Bullet(alien.x + alien.w * 0.5, alien.y + alien.h, 7, 5, 5, 'white'))
+        bullets.push(new Bullet(alien.x + alien.w * 0.5, alien.y + alien.h, this.bulletVel, 5, 5, 'white'))
       }
       frames++;
 
@@ -334,7 +345,10 @@
             aliens[i].y += 20;
 
             if (aliens[i].y > display.height - 45) {
-              display.loseGame();
+              if (this.gameState !== 'finished') {
+                display.loseGame();
+                this.gameState = 'finished'
+              }
               // handle restart and reset game.
             }
           }
