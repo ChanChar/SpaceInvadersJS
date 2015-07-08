@@ -220,8 +220,8 @@
         tank.x += display.width
       }
 
-      // if (input.isPressed(32) && tank.alive) {
-      if (input.isDown(32)) { // FEEL MAH LAZERS
+      if (input.isPressed(32) && tank.alive) {
+      // if (input.isDown(32)) { // FEEL MAH LAZERS
         bullets.push(new Bullet(tank.x + 8, tank.y, -10, 4, 8, '#2ecc71'));
           tankBlast.play();
           tankBlast.currentTime = 0;
